@@ -39,6 +39,6 @@ def process_dict(dir_path) :
     file.close()
         
 
-#get_color("test_image.svg")
-process_dict("/flags-ultra")
-#get_color("test_bar.png")
+get_color("al.png")
+#process_dict("/flags-ultra")
+#get_color("test_3_ae.png")
