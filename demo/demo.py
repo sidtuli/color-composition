@@ -6,39 +6,23 @@ def get_color(file_path) :
     im = Image.open(file_path,'r')
     if im.mode != "RGBA":
         im = im.convert('RGBA')
-    pixel_values = list(im.getdata())
-
-    color_dict = {}
-    for color in pixel_values:
-        color_str = str(color)
-        if color_str in color_dict:
-            color_dict[color_str] += 1
-        else :
-            color_dict[color_str] = 1
-    #color_dict_str = ""
-    #for (color, count) in color_dict.items():
-        
-    print(im.mode)  
-    print(color_dict,"\n")
-    return color_dict
+    
+    return im.getcolors(maxcolors=len(im.getdata()))
 
 def process_dict(dir_path) :
-    #print(os.listdir(os.getcwd()+dir_path))
-    file = open("test.txt","w")
+    
+    file = open("test.json","w")
     data = {}
     for filename in os.listdir(os.getcwd()+dir_path):
         file_path = os.getcwd()+dir_path+"/"+filename
-        res = get_color(file_path)
-        #file.write(filename + " - ")
-        #file.write(res)
-        data[filename] = res
-        print(filename," - ",len(res.keys()))
+        data[filename] = get_color(file_path)
+        
         
         
     json.dump(data,file)
     file.close()
         
 
-get_color("al.png")
-#process_dict("/flags-ultra")
-#get_color("test_3_ae.png")
+
+process_dict("/test_images")
+
