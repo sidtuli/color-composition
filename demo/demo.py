@@ -2,37 +2,41 @@ from PIL import Image
 import os, json
 
 
-def getcolor(file_path) :
+def getcolor(img_path):
     '''
     A method toreturn color info on an image
     '''
-    im = Image.open(file_path,'r').copy()
+    # Obtain a copy of the image given
+    im = Image.open(img_path,'r').copy()
+    # Assure that the copy is in RGBA mode to read color values
     if im.mode != "RGBA":
         im = im.convert('RGBA')
-    
+    # Get colors from image to return and then close image pointer
     result = im.getcolors(maxcolors=len(im.getdata()))
     im.close()
     return result
 
-def stackbyrgba(original_img):
+def stackbyrgba(img_path):
     '''
     Takes an image and then spits out an image with all the rgb values sorted horizontally
     '''
-    im = Image.open(original_img,'r').copy()
+    # Read copy of image and convert it intoRGBA mode
+    im = Image.open(img_path,'r').copy()
     if im.mode != "RGBA":
         im = im.convert('RGBA')
+    # Get pixels of original image and then iterate them as "sorted" by sum of rgba values
     pixellist = list(im.getdata())
     newpixels = list()
     for pixel in sorted(pixellist,key = lambda pixel:pixel[0]+pixel[1]+pixel[2]+pixel[3]):
         newpixels.append(pixel)
 
-    
+    # Make a new image with specifications of old and then put in new list of "sorted" pixels
     restack = Image.new(im.mode,im.size)
 
     im.close()
     
     restack.putdata(newpixels)
-    restack.save(original_img+"[rgba_stacked].png")
+    restack.save(img_path+"[rgba_stacked].png")
     restack.close()
 
     
@@ -40,9 +44,11 @@ def stackbyfrequency(original_img):
     '''
     Takes an image and then spits out an image with all the rgb values sorted horizontally by frequency
     '''
+    # Open an image copy and then convert it to RGBA mode
     im = Image.open(original_img,'r').copy()
     if im.mode != "RGBA":
         im = im.convert('RGBA')
+    # Get a list of all colors used from original image
     colorlist = list(im.getcolors(maxcolors=len(im.getdata())))
     newpixels = list()
     for color in sorted(colorlist, key = lambda color: color[0]):
@@ -81,6 +87,8 @@ def extract_frames(img_path):
     except EOFError:
         print("End of Frames")
         pass
+
+def is_animated(img_path):
     
 def process_dict(dir_path) :
     '''

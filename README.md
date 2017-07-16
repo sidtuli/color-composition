@@ -17,6 +17,8 @@ A little project to analyze the colors of images.
 * Find a way to make this all an executable
 * Make it a command line tool?
 * Give it a user interface of some type?
+* Function to determine if file is video, animated (i.e. gif), or just plain image
+* Functions to "glitch" images - random sort pixels, random shift colors, random swap pixels, "delay" pixels between frames 
 
 ###### Flags/Demo Data
 * wikimedia flags [link](https://commons.wikimedia.org/wiki/Category:SVG_sovereign_state_flags)
