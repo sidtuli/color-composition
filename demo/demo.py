@@ -57,6 +57,30 @@ def stackbyfrequency(original_img):
 
     restack.close()
     
+
+def extract_frames(img_path):
+    '''
+    A method to extract each frame of a gif into separate images
+    '''
+    # We do not use copy here as it would only copy the first frame of the gif
+    im = Image.open(img_path,'r')
+    
+    try:
+        while True:
+            print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
+            # Take frame number and then save a  copy of the current frame
+            frame_num = im.tell()
+            curr_frame = im.copy()
+            # Then we save the frame as a png while converting it to RGBA mode
+            frame_export = Image.new("RGBA",curr_frame.size)
+            frame_export.paste(curr_frame, (0,0), curr_frame.convert("RGBA"))
+            frame_export.save(img_path+"[frame #"+str(frame_num+1)+"].png")
+            frame_export.close()
+            # Then move the image ahead one frame
+            im.seek(im.tell()+1)
+    except EOFError:
+        print("End of Frames")
+        pass
     
 def process_dict(dir_path) :
     '''
@@ -75,6 +99,6 @@ def process_dict(dir_path) :
         
 
 
-process_dict("/test_images/flags")
+#process_dict("/test_images/flags")
 #stackbyrgb(os.getcwd()+"/test_images/Sør-Trøndelag.png")
-
+extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
