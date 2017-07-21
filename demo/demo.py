@@ -119,6 +119,6 @@ def process_dict(dir_path) :
         
 
 
-#process_dict("/test_images/flags")
-stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
+process_dict("/test_images/flags")
+#stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
