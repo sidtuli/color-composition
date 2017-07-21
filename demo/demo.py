@@ -22,6 +22,7 @@ def stackbyrgba(img_path):
     '''
     # Read copy of image and convert it intoRGBA mode
     im = Image.open(img_path,'r').copy()
+    
     if im.mode != "RGBA":
         im = im.convert('RGBA')
     # Get pixels of original image and then iterate them as "sorted" by sum of rgba values
@@ -51,9 +52,11 @@ def stackbyfrequency(original_img):
     # Get a list of all colors used from original image
     colorlist = list(im.getcolors(maxcolors=len(im.getdata())))
     newpixels = list()
+    # Then sort the pixels by their frequency count in the image for each color
     for color in sorted(colorlist, key = lambda color: color[0]):
         newpixels += [color[1]] * color[0]
-    
+
+    # Create a new image with olg image designs and new list of pixels
     restack = Image.new(im.mode,im.size)
 
     im.close()
@@ -87,8 +90,17 @@ def extract_frames(img_path):
     except EOFError:
         print("End of Frames")
         pass
+    im.close()
 
-def is_animated(img_path):
+def is_multi_frame(img_path):
+    '''
+    A function to tell whether or not an image is animated
+    '''
+    im = Image.open(img_path,'r')
+    test = (hasattr(im,"is_animated") and im.is_animated) or (hasattr(im,"n_frames") and im.n_frames > 1)
+    im.close()
+    return test
+    
     
 def process_dict(dir_path) :
     '''
@@ -108,5 +120,5 @@ def process_dict(dir_path) :
 
 
 #process_dict("/test_images/flags")
-#stackbyrgb(os.getcwd()+"/test_images/Sør-Trøndelag.png")
-extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
+stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
+#extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
