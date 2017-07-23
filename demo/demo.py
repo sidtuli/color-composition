@@ -27,16 +27,14 @@ def stackbyrgba(img_path):
         im = im.convert('RGBA')
     # Get pixels of original image and then iterate them as "sorted" by sum of rgba values
     pixellist = list(im.getdata())
-    newpixels = list()
-    for pixel in sorted(pixellist,key = lambda pixel:pixel[0]+pixel[1]+pixel[2]+pixel[3]):
-        newpixels.append(pixel)
-
+    pixellist.sort(key = lambda pixel:pixel[0]+pixel[1]+pixel[2]+pixel[3])
+    
     # Make a new image with specifications of old and then put in new list of "sorted" pixels
     restack = Image.new(im.mode,im.size)
 
     im.close()
     
-    restack.putdata(newpixels)
+    restack.putdata(pixellist)
     restack.save(img_path+"[rgba_stacked].png")
     restack.close()
 
@@ -92,6 +90,37 @@ def extract_frames(img_path):
         pass
     im.close()
 
+def stackbyrgbagif(img_path):
+    '''
+    Restack each image in a gif by rgba value and then make a new gif from those images
+    '''
+    # We do not use copy here as it would only copy the first frame of the gif
+    im = Image.open(img_path,'r')
+    #new_gif = Image.new("RGBA",im.size)
+    new_frames = []
+    try:
+        while True:
+            print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
+            # save a  copy of the current frame
+            
+            curr_frame = im.copy()
+            # Sort the frame's pixels
+            curr_frame = curr_frame.convert('RGBA')
+            pixellist = list(curr_frame.getdata())
+            pixellist.sort(key = lambda pixel:pixel[0]+pixel[1]+pixel[2]+pixel[3])
+            restack = Image.new("RGBA",curr_frame.size)
+            restack.putdata(pixellist)
+            new_frames.append(restack)
+            # Then move the image ahead one frame
+            im.seek(im.tell()+1)
+    except EOFError:
+        print("End of Frames")
+        pass
+    new_gif = Image.new("RGBA",im.size)
+    new_gif.save(img_path+"[rgba_restack].gif",save_all=True, append_images=new_frames)
+    new_gif.close()
+    im.close()
+
 def is_multi_frame(img_path):
     '''
     A function to tell whether or not an image is animated
@@ -119,6 +148,7 @@ def process_dict(dir_path) :
         
 
 
-process_dict("/test_images/flags")
+#process_dict("/test_images/flags")
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
+stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")

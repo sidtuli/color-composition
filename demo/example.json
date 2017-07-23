@@ -1,6 +1,54 @@
-{"filename":{
-  "type":"animated",
-  "colorarray":[[pixelcount,[rvalue,gvalue,bvalue,avalue]]],
-  "frames":[[
-    ]]
-}}
+{
+  "animated.gif": {
+    "type": "animated",
+    "colors": [
+      [
+        "pixelcount",
+        [
+          "rvalue",
+          "gvalue",
+          "bvalue",
+          "avalue"
+        ]
+      ]
+    ],
+    "frames": [
+      [
+        [
+          "pixelcount",
+          [
+            "rvalue",
+            "gvalue",
+            "bvalue",
+            "avalue"
+          ]
+        ]
+      ],
+      [
+        [
+          "pixelcount",
+          [
+            "rvalue",
+            "gvalue",
+            "bvalue",
+            "avalue"
+          ]
+        ]
+      ]
+    ],
+    "frame_number": 2
+  },
+  "picture.png": {
+    "type": "picture",
+    "colors": [
+      [
+        "pixelcount",
+        [
+          "rvalue",
+          "gvalue",
+          "bvalue"
+        ]
+      ]
+    ]
+  }
+}
