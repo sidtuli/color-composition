@@ -96,13 +96,25 @@ def stackbyrgbagif(img_path):
     '''
     # We do not use copy here as it would only copy the first frame of the gif
     im = Image.open(img_path,'r')
-    #new_gif = Image.new("RGBA",im.size)
+    # Create gif image object
+    new_gif = Image.new("RGBA",im.size)
+    # Copy first frame from image
+    first_frame = im.copy()
+    first_frame = first_frame.convert("RGBA")
+    # Sort pixels of first frame
+    pixellist = list(first_frame.getdata())
+    pixellist.sort(key = lambda pixel:pixel[0]+pixel[1]+pixel[2]+pixel[3])
+    # Create object for new first frame of the gif
+    new_first_frame = Image.new("RGBA",im.size)
+    new_first_frame.putdata(pixellist)
+    # Then this new frame is put into the gif image object
+    new_gif.paste(new_first_frame,(0,0),new_first_frame.convert("RGBA"))
     new_frames = []
     try:
         while True:
             print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
             # save a  copy of the current frame
-            
+            im.seek(im.tell()+1)
             curr_frame = im.copy()
             # Sort the frame's pixels
             curr_frame = curr_frame.convert('RGBA')
@@ -112,11 +124,12 @@ def stackbyrgbagif(img_path):
             restack.putdata(pixellist)
             new_frames.append(restack)
             # Then move the image ahead one frame
-            im.seek(im.tell()+1)
+            
     except EOFError:
         print("End of Frames")
         pass
-    new_gif = Image.new("RGBA",im.size)
+    #new_gif = Image.new("RGBA",im.size)
+    
     new_gif.save(img_path+"[rgba_restack].gif",save_all=True, append_images=new_frames)
     new_gif.close()
     im.close()
@@ -151,4 +164,5 @@ def process_dict(dir_path) :
 #process_dict("/test_images/flags")
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
-stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")
+#stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")
+extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
