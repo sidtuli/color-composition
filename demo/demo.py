@@ -4,7 +4,7 @@ import os, json
 
 def getcolor(img_path):
     '''
-    A method toreturn color info on an image
+    A method to return color info on an image
     '''
     # Obtain a copy of the image given
     im = Image.open(img_path,'r').copy()
@@ -15,6 +15,29 @@ def getcolor(img_path):
     result = im.getcolors(maxcolors=len(im.getdata()))
     im.close()
     return result
+
+def getcolorgif(img_path):
+    '''
+    Method to obtain color info on the frames of a gif
+    '''
+    im = Image.open(img_path,"r")
+    frames = []
+    try:
+        while True:
+            print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
+            # Take frame number and then save a  copy of the current frame
+            frame_num = im.tell()
+            curr_frame = im.copy()
+            # Then we save the frame as a png while converting it to RGBA mode
+            curr_frame = curr_frame.convert("RGBA")
+            frames.append(curr_frame.getcolors(maxcolors=len(curr_frame.getdata())))
+            curr_frame.close()
+            # Then move the image ahead one frame
+            im.seek(im.tell()+1)
+    except EOFError:
+        print("End of Frames")
+        pass
+    return frames
 
 def stackbyrgba(img_path):
     '''
@@ -165,4 +188,5 @@ def process_dict(dir_path) :
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
 #stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")
-extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
+#extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
+print(getcolorgif(os.getcwd()+"/test_images/dark_souls.gif"))
