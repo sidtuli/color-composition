@@ -165,7 +165,15 @@ def is_multi_frame(img_path):
     test = (hasattr(im,"is_animated") and im.is_animated) or (hasattr(im,"n_frames") and im.n_frames > 1)
     im.close()
     return test
-    
+
+def can_open_image(img_path):
+    try:
+        im = Image.open(img_path)
+        im.close()
+    except OSError:
+        print("Error opening file")
+        pass
+        
     
 def process_dict(dir_path) :
     '''
@@ -189,4 +197,4 @@ def process_dict(dir_path) :
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
 #stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
-print(getcolorgif(os.getcwd()+"/test_images/dark_souls.gif"))
+can_open_image(os.getcwd()+"/test_images/not2.svg")
