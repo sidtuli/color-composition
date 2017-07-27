@@ -1,6 +1,34 @@
 from PIL import Image
 import os, json
 
+# **** Functions to process files and directories ****
+
+def process_dict(dir_path) :
+    '''
+    Goes through an entire directory to output a data file of 
+    '''
+    json_file = open("test.json","w")
+    data = {}
+    files = os.listdir(os.getcwd()+dir_path)
+    i = 0
+    while i < len(files):
+        file = files[i]
+        file_path = os.getcwd()+dir_path+"/"+file
+        if os.path.isfile(file_path):
+            data[file] = process_file(file_path)
+        elif os.path.isdir(file_path):
+            dir_files = os.listdir(file_path)
+            new_dir_files = [file+dir_file for dir_file in dir_files]
+            files = files + new_dir_files
+        
+        #stackbyfrequency(file_path)
+        #stackbyrgba(file_path)
+        i += 1
+    json.dump(data,json_file)
+    json_file.close()
+
+def process_file(file_path):
+    return getcolor(file_path)
 
 def getcolor(img_path):
     '''
@@ -175,26 +203,13 @@ def can_open_image(img_path):
         pass
         
     
-def process_dict(dir_path) :
-    '''
-    Goes through an entire directory to output a data file of 
-    '''
-    file = open("test.json","w")
-    data = {}
-    for filename in os.listdir(os.getcwd()+dir_path):
-        file_path = os.getcwd()+dir_path+"/"+filename
-        data[filename] = getcolor(file_path)
-        stackbyfrequency(file_path)
-        stackbyrgba(file_path)
-        
-    json.dump(data,file)
-    file.close()
+
         
 
 
-#process_dict("/test_images/flags")
+process_dict("/test_images/flags")
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
 #stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
-can_open_image(os.getcwd()+"/test_images/not2.svg")
+#can_open_image(os.getcwd()+"/test_images/not2.svg")
