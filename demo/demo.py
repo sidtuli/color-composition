@@ -10,26 +10,31 @@ def process_dict(dir_path) :
     json_file = open("test.json","w")
     data = {}
     files = os.listdir(os.getcwd()+dir_path)
+    stuff = os.walk(os.getcwd()+dir_path)
     i = 0
-    while i < len(files):
-        file = files[i]
-        file_path = os.getcwd()+dir_path+"/"+file
-        if os.path.isfile(file_path):
-            data[file] = process_file(file_path)
-        elif os.path.isdir(file_path):
-            dir_files = os.listdir(file_path)
-            new_dir_files = [file+dir_file for dir_file in dir_files]
-            files = files + new_dir_files
+    file_paths = []
+    for root, dirs, files in stuff:
+        '''print(root)
+        print(dirs)
+        print(files)
+        print("*****************************************")'''
+        data_prepend = root.split(os.sep)[-1]
         
-        #stackbyfrequency(file_path)
-        #stackbyrgba(file_path)
-        i += 1
+        file_paths = file_paths + [(root+"/"+file,data_prepend+"/"+file) for file in files]
+    #print(file_paths)
+    for file_path in file_paths:
+        data_name = file_path[1]
+        data[data_name] = process_file(file_path[0])
+    
+    
     json.dump(data,json_file)
     json_file.close()
 
 def process_file(file_path):
-    return getcolor(file_path)
-
+    if can_open_image(file_path) and not is_multi_frame(file_path):
+        return getcolor(file_path)
+    else:
+        return "null"
 def getcolor(img_path):
     '''
     A method to return color info on an image
@@ -198,16 +203,19 @@ def can_open_image(img_path):
     try:
         im = Image.open(img_path)
         im.close()
+        
     except OSError:
         print("Error opening file")
+        
         pass
+    #return False
         
     
 
         
 
 
-process_dict("/test_images/flags")
+process_dict("/test_images")
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
 #stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")
