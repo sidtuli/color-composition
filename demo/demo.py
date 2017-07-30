@@ -70,7 +70,7 @@ def extract_frames(img_path):
     '''
     # We do not use copy here as it would only copy the first frame of the gif
     im = Image.open(img_path,'r')
-    
+    print(im.info)
     try:
         while True:
             print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
@@ -88,6 +88,17 @@ def extract_frames(img_path):
         print("End of Frames")
         pass
     im.close()
+
+def handle_gif_info(img_info,n_frames):
+    result_info = {}
+    
+    result_info["background"] = img_info["background"] if "duration" in img_info else 0
+    result_info["transparency"] = img_info["transparency"] if "transparency" in img_info else 0
+    result_info["duration"] = img_info["duration"] if "duration" in img_info else (10 * n_frames)
+    result_info["loop"] = img_info["loop"] if "loop" in img_info else 0
+    
+    return result_info
+    
 
 # **********************************************************************************************************************
 #                                       **** Functions to process colors for files ****
@@ -194,8 +205,9 @@ def stackbyrgbagif(img_path):
     except EOFError:
         print("End of Frames")
         pass
-    
-    new_gif.save(img_path+"[rgba_restack].gif",save_all=True, append_images=new_frames)
+    print(im.info)
+    new_gif_info = handle_gif_info(im.info,im.n_frames)
+    new_gif.save(img_path+"[rgba_restack].gif",save_all=True, append_images=new_frames, duration=new_gif_info["duration"], loop=new_gif_info["loop"], background=new_gif_info["background"])
     new_gif.close()
     im.close()
 
@@ -229,9 +241,9 @@ def stackbyfrequency(original_img):
     restack.close()
 
 
-process_dict("/test_images")
+#process_dict("/test_images")
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
-#stackbyrgbagif(os.getcwd()+"/test_images/dark_souls.gif")
+stackbyrgbagif(os.getcwd()+"/test_images/spinning_cubes.gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
 #can_open_image(os.getcwd()+"/test_images/not2.svg")
