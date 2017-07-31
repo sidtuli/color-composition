@@ -26,3 +26,4 @@ A little project to analyze the colors of images.
 * stop thief image [link](https://www.reddit.com/r/roguelikedev/comments/688r21/stop_thief_a_mockup/)
 * flag of Sør-Trøndelag [link](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Flag_of_S%C3%B8r-Tr%C3%B8ndelag.svg/1280px-Flag_of_S%C3%B8r-Tr%C3%B8ndelag.svg.png)
 * dark souls pixel art gif [link](https://www.reddit.com/r/gaming/comments/6nb14v/dark_souls_pixel_art_gif/)
+* spinning cubes [link](https://www.reddit.com/r/loadingicon/comments/6q0oi2/spinning_cubes_oc/)

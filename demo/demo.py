@@ -227,6 +227,7 @@ def stackbyfrequency(original_img):
     colorlist = list(im.getcolors(maxcolors=len(im.getdata())))
     newpixels = list()
     # Then sort the pixels by their frequency count in the image for each color
+    
     for color in sorted(colorlist, key = lambda color: color[0]):
         newpixels += [color[1]] * color[0]
 
@@ -240,10 +241,60 @@ def stackbyfrequency(original_img):
 
     restack.close()
 
+def stackbyfrequencygif(img_path):
+    '''
+    Takes a gif and spits out a gif with every frame resorted by frequency of colors
+    '''
+    # We do not use copy here as it would only copy the first frame of the gif
+    im = Image.open(img_path,'r')
+    # Create gif image object
+    new_gif = Image.new("RGBA",im.size)
+    # Copy first frame from image
+    first_frame = im.copy()
+    first_frame = first_frame.convert("RGBA")
+    # Sort pixels of first frame
+    pixellist = list(first_frame.getdata())
+    pixellist.sort(key = lambda pixel:pixel[0]+pixel[1]+pixel[2]+pixel[3])
+    # Create object for new first frame of the gif
+    new_first_frame = Image.new("RGBA",im.size)
+    new_first_frame.putdata(pixellist)
+    # Then this new frame is put into the gif image object
+    new_gif.paste(new_first_frame,(0,0),new_first_frame.convert("RGBA"))
+    new_frames = []
+    try:
+        while True:
+            print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
+            # save a  copy of the current frame
+            im.seek(im.tell()+1)
+            curr_frame = im.copy()
+            # Sort the frame's pixels
+            curr_frame = curr_frame.convert('RGBA')
+            
+            colorlist = list(curr_frame.getcolors(maxcolors=len(curr_frame.getdata())))
+            newpixels = list()
 
+            for color in sorted(colorlist, key = lambda color: color[0]):
+                newpixels += [color[1]] * color[0]
+            restack = Image.new("RGBA",curr_frame.size)
+            restack.putdata(newpixels)
+            new_frames.append(restack)
+            # Then move the image ahead one frame
+            
+    except EOFError:
+        print("End of Frames")
+        pass
+    print(im.info)
+    new_gif_info = handle_gif_info(im.info,im.n_frames)
+    new_gif.save(img_path+"[freq_restack].gif",save_all=True, append_images=new_frames, duration=new_gif_info["duration"], loop=new_gif_info["loop"], background=new_gif_info["background"])
+    new_gif.close()
+    im.close()
+    
+
+#stackbyfrequency(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #process_dict("/test_images")
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
-stackbyrgbagif(os.getcwd()+"/test_images/spinning_cubes.gif")
+#stackbyrgbagif(os.getcwd()+"/test_images/spinning_cubes.gif")
+stackbyfrequencygif(os.getcwd()+"/test_images/spinning_cubes.gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
 #can_open_image(os.getcwd()+"/test_images/not2.svg")
