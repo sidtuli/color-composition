@@ -253,11 +253,15 @@ def stackbyfrequencygif(img_path):
     first_frame = im.copy()
     first_frame = first_frame.convert("RGBA")
     # Sort pixels of first frame
-    pixellist = list(first_frame.getdata())
-    pixellist.sort(key = lambda pixel:pixel[0]+pixel[1]+pixel[2]+pixel[3])
+    colorlist = list(first_frame.getcolors(maxcolors=len(first_frame.getdata())))
+    newpixels = list()
+
+    for color in sorted(colorlist, key = lambda color: color[0]):
+        newpixels += [color[1]] * color[0]
+    
     # Create object for new first frame of the gif
     new_first_frame = Image.new("RGBA",im.size)
-    new_first_frame.putdata(pixellist)
+    new_first_frame.putdata(newpixels)
     # Then this new frame is put into the gif image object
     new_gif.paste(new_first_frame,(0,0),new_first_frame.convert("RGBA"))
     new_frames = []
@@ -296,5 +300,6 @@ def stackbyfrequencygif(img_path):
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
 #stackbyrgbagif(os.getcwd()+"/test_images/spinning_cubes.gif")
 stackbyfrequencygif(os.getcwd()+"/test_images/spinning_cubes.gif")
+extract_frames(os.getcwd()+"/test_images/spinning_cubes.gif[freq_restack].gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
 #can_open_image(os.getcwd()+"/test_images/not2.svg")
