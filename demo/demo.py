@@ -1,5 +1,5 @@
 from PIL import Image
-import os, json
+import os, json, random
 
 # **********************************************************************************************************************
 #                                       **** Functions to process files and directories ****
@@ -189,7 +189,7 @@ def stackbyrgbagif(img_path):
     new_frames = []
     try:
         while True:
-            print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
+            print("RGBA Stacking frame #"+str(im.tell()+1)+" of file: " + str(img_path))
             # save a  copy of the current frame
             im.seek(im.tell()+1)
             curr_frame = im.copy()
@@ -267,7 +267,7 @@ def stackbyfrequencygif(img_path):
     new_frames = []
     try:
         while True:
-            print("Saving frame #"+str(im.tell()+1)+" of file: " + str(img_path))
+            print("Frequency stacking frame #"+str(im.tell()+1)+" of file: " + str(img_path))
             # save a  copy of the current frame
             im.seek(im.tell()+1)
             curr_frame = im.copy()
@@ -287,19 +287,92 @@ def stackbyfrequencygif(img_path):
     except EOFError:
         print("End of Frames")
         pass
-    print(im.info)
+    
     new_gif_info = handle_gif_info(im.info,im.n_frames)
     new_gif.save(img_path+"[freq_restack].gif",save_all=True, append_images=new_frames, duration=new_gif_info["duration"], loop=new_gif_info["loop"], background=new_gif_info["background"])
     new_gif.close()
     im.close()
-    
 
+# **********************************************************************************************************************
+#                                       **** Functions to randomize pixels in images ****
+# **********************************************************************************************************************
+def randomizepixels(img_path):
+    '''
+    Takes an image and randomizes its pixels
+    '''
+    im = Image.open(img_path,'r').copy()
+    
+    if im.mode != "RGBA":
+        im = im.convert('RGBA')
+    
+    pixellist = list(im.getdata())
+
+    random.shuffle(pixellist)
+
+    rand_result = Image.new(im.mode,im.size)
+
+    im.close()
+    
+    rand_result.putdata(pixellist)
+    rand_result.save(img_path+"[random].png")
+    rand_result.close()
+
+def randomizepixelsgif(img_path):
+    # We do not use copy here as it would only copy the first frame of the gif
+    im = Image.open(img_path,'r')
+    # Create gif image object
+    new_gif = Image.new("RGBA",im.size)
+    # Copy first frame from image
+    first_frame = im.copy()
+    first_frame = first_frame.convert("RGBA")
+    # Sort pixels of first frame
+    newpixels = list(first_frame.getdata())
+
+    random.shuffle(newpixels)
+    
+    # Create object for new first frame of the gif
+    new_first_frame = Image.new("RGBA",im.size)
+    new_first_frame.putdata(newpixels)
+    # Then this new frame is put into the gif image object
+    new_gif.paste(new_first_frame,(0,0),new_first_frame.convert("RGBA"))
+    new_frames = []
+    try:
+        while True:
+            print("Randomizing frame #"+str(im.tell()+1)+" of file: " + str(img_path))
+            # save a  copy of the current frame
+            im.seek(im.tell()+1)
+            curr_frame = im.copy()
+            # Sort the frame's pixels
+            curr_frame = curr_frame.convert('RGBA')
+            newpixels = list(curr_frame.getdata())
+            random.shuffle(newpixels)
+
+            restack = Image.new("RGBA",curr_frame.size)
+            restack.putdata(newpixels)
+            new_frames.append(restack)
+            # Then move the image ahead one frame
+            
+    except EOFError:
+        print("End of Frames")
+        pass
+    
+    new_gif_info = handle_gif_info(im.info,im.n_frames)
+    new_gif.save(img_path+"[random].gif",save_all=True, append_images=new_frames, duration=new_gif_info["duration"], loop=new_gif_info["loop"], background=new_gif_info["background"])
+    new_gif.close()
+    im.close()
+
+# **********************************************************************************************************************
+#                                                       **** Tests ****
+# **********************************************************************************************************************
+randomizepixelsgif(os.getcwd()+"/test_images/dark_souls.gif")
+extract_frames(os.getcwd()+"/test_images/dark_souls.gif[random].gif")
+#randomizepixels(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #stackbyfrequency(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #process_dict("/test_images")
 #stackbyrgba(os.getcwd()+"/test_images/Sør-Trøndelag.png")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif")
 #stackbyrgbagif(os.getcwd()+"/test_images/spinning_cubes.gif")
-stackbyfrequencygif(os.getcwd()+"/test_images/spinning_cubes.gif")
-extract_frames(os.getcwd()+"/test_images/spinning_cubes.gif[freq_restack].gif")
+#stackbyfrequencygif(os.getcwd()+"/test_images/spinning_cubes.gif")
+#extract_frames(os.getcwd()+"/test_images/spinning_cubes.gif[freq_restack].gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[rgba_restack].gif")
 #can_open_image(os.getcwd()+"/test_images/not2.svg")
