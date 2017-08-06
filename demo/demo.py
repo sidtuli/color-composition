@@ -99,7 +99,21 @@ def handle_gif_info(img_info,n_frames):
     
     return result_info
     
+def pixels_into_rows(pixels,width,height):
+    rows = []
+    for i in range(height):
+        rows.append(pixels[i*width:(i+1)*width])
+    return rows
 
+def pixels_into_cols(pixels,width,height):
+    rows = []
+    for i in range(height):
+        rows.append(pixels[i*width:(i+1)*width])
+    cols = []
+    for i in range(0,width):
+        cols.append([row[i] for row in rows])
+        
+    return cols
 # **********************************************************************************************************************
 #                                       **** Functions to process colors for files ****
 # **********************************************************************************************************************
@@ -371,7 +385,7 @@ def partialrandomizepixels(img_path,proportion):
         im = im.convert('RGBA')
     
     pixellist = list(im.getdata())
-    
+
     pixel_num = len(pixellist)
     pixel_count = 0
     rand_dict = {}
@@ -480,12 +494,35 @@ def partialrandomizepixelsgif(img_path,proportion):
     new_gif.save(img_path+"[part-random].gif",save_all=True, append_images=new_frames, duration=new_gif_info["duration"], loop=new_gif_info["loop"], background=new_gif_info["background"])
     new_gif.close()
     im.close()
+# **********************************************************************************************************************
+#                                               **** ASDF Pixel Sort Methods ****
+# **********************************************************************************************************************
+def asdf_sort(img_path):
+    '''
+    Use the ASDF sorting algorithm to sort pixels of an image
+    '''
+    # Open an image copy and then convert it to RGBA mode
+    im = Image.open(original_img,'r').copy()
+    if im.mode != "RGBA":
+        im = im.convert('RGBA')
+    
+    
 
+    # Create a new image with olg image designs and new list of pixels
+    restack = Image.new(im.mode,im.size)
+
+    im.close()
+    
+    restack.putdata(newpixels)
+    restack.save(original_img+"[freq_stacked].png")
+
+    restack.close()
 # **********************************************************************************************************************
 #                                                       **** Tests ****
 # **********************************************************************************************************************
-partialrandomizepixelsgif(os.getcwd()+"/test_images/dark_souls.gif",0.5)
-#partialrandomizepixels(os.getcwd()+"/test_images/Sør-Trøndelag.png",1)
+
+#partialrandomizepixelsgif(os.getcwd()+"/test_images/dark_souls.gif",0.5)
+partialrandomizepixels(os.getcwd()+"/test_images/Sør-Trøndelag.png",.5)
 #randomizepixelsgif(os.getcwd()+"/test_images/dark_souls.gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[random].gif")
 #randomizepixels(os.getcwd()+"/test_images/Sør-Trøndelag.png")
