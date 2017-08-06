@@ -494,35 +494,12 @@ def partialrandomizepixelsgif(img_path,proportion):
     new_gif.save(img_path+"[part-random].gif",save_all=True, append_images=new_frames, duration=new_gif_info["duration"], loop=new_gif_info["loop"], background=new_gif_info["background"])
     new_gif.close()
     im.close()
-# **********************************************************************************************************************
-#                                               **** ASDF Pixel Sort Methods ****
-# **********************************************************************************************************************
-def asdf_sort(img_path):
-    '''
-    Use the ASDF sorting algorithm to sort pixels of an image
-    '''
-    # Open an image copy and then convert it to RGBA mode
-    im = Image.open(original_img,'r').copy()
-    if im.mode != "RGBA":
-        im = im.convert('RGBA')
-    
-    
 
-    # Create a new image with olg image designs and new list of pixels
-    restack = Image.new(im.mode,im.size)
-
-    im.close()
-    
-    restack.putdata(newpixels)
-    restack.save(original_img+"[freq_stacked].png")
-
-    restack.close()
 # **********************************************************************************************************************
 #                                                       **** Tests ****
 # **********************************************************************************************************************
-
 #partialrandomizepixelsgif(os.getcwd()+"/test_images/dark_souls.gif",0.5)
-partialrandomizepixels(os.getcwd()+"/test_images/Sør-Trøndelag.png",.5)
+#partialrandomizepixels(os.getcwd()+"/test_images/Sør-Trøndelag.png",.5)
 #randomizepixelsgif(os.getcwd()+"/test_images/dark_souls.gif")
 #extract_frames(os.getcwd()+"/test_images/dark_souls.gif[random].gif")
 #randomizepixels(os.getcwd()+"/test_images/Sør-Trøndelag.png")

@@ -10,7 +10,7 @@ A little project to analyze the colors of images.
 * Fix process directory function to handle sub-directories
 * Improve error-handling of current methods
 * Add ability to analyze gifs
-* Add ability to analyze videos
+* Add ability to analyze videos [possible notes](dcc.umd.edu/portfolio/radkins/2016/02/17/video-processing/)
 * Create function to extract frames from gifs
 * Create function to extract frames from videos
 * Improve comments on code and documentation
@@ -19,6 +19,7 @@ A little project to analyze the colors of images.
 * Give it a user interface of some type?
 * Function to determine if file is video, animated (i.e. gif), or just plain image
 * Functions to "glitch" images - random sort pixels, random shift colors, random swap pixels, "delay" pixels between frames 
+* Adding new types of sorts like [asdf sort](https://github.com/kimasendorf/ASDFPixelSort/blob/master/ASDFPixelSort.pde) [some from here](https://github.com/jeffThompson/PixelSorting)
 
 ###### Flags/Demo Data
 * wikimedia flags [link](https://commons.wikimedia.org/wiki/Category:SVG_sovereign_state_flags)
